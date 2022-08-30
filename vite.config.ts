@@ -1,16 +1,16 @@
 /// <reference types="vitest" />
 
-import { dirname, relative } from 'path'
-import type { UserConfig } from 'vite'
-import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import WindiCSS from 'vite-plugin-windicss'
-import windiConfig from './windi.config'
-import { isDev, port, r } from './scripts/utils'
+import { dirname, relative } from 'path';
+import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite';
+import Vue from '@vitejs/plugin-vue';
+import Icons from 'unplugin-icons/vite';
+import IconsResolver from 'unplugin-icons/resolver';
+import Components from 'unplugin-vue-components/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import WindiCSS from 'vite-plugin-windicss';
+import windiConfig from './windi.config';
+import { isDev, port, r } from './scripts/utils';
 
 export const sharedConfig: UserConfig = {
   root: r('src'),
@@ -21,6 +21,7 @@ export const sharedConfig: UserConfig = {
   },
   define: {
     __DEV__: isDev,
+    'process.env': process.env,
   },
   plugins: [
     Vue(),
@@ -29,9 +30,7 @@ export const sharedConfig: UserConfig = {
       imports: [
         'vue',
         {
-          'webextension-polyfill': [
-            ['*', 'browser'],
-          ],
+          'webextension-polyfill': [['*', 'browser']],
         },
       ],
       dts: r('src/auto-imports.d.ts'),
@@ -59,21 +58,18 @@ export const sharedConfig: UserConfig = {
       enforce: 'post',
       apply: 'build',
       transformIndexHtml(html, { path }) {
-        return html.replace(/"\/assets\//g, `"${relative(dirname(path), '/assets')}/`)
+        return html.replace(
+          /"\/assets\//g,
+          `"${relative(dirname(path), '/assets')}/`
+        );
       },
     },
   ],
   optimizeDeps: {
-    include: [
-      'vue',
-      '@vueuse/core',
-      'webextension-polyfill',
-    ],
-    exclude: [
-      'vue-demi',
-    ],
+    include: ['vue', '@vueuse/core', 'webextension-polyfill'],
+    exclude: ['vue-demi'],
   },
-}
+};
 
 export default defineConfig(({ command }) => ({
   ...sharedConfig,
@@ -112,4 +108,4 @@ export default defineConfig(({ command }) => ({
     globals: true,
     environment: 'jsdom',
   },
-}))
+}));
