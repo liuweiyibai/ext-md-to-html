@@ -2,7 +2,12 @@
 import { onMessage } from 'webext-bridge';
 import { createApp } from 'vue';
 import App from './views/App.vue';
-import { bindEvent, addStyles } from '~/utils';
+import { bindEvent, addStyles, unbindEvent } from '~/utils';
+import {
+  CLICK_EXT_TRANS_MENU,
+  EXT_BIND_EVENT,
+  EXT_UNBIND_EVENT,
+} from '~/utils/keys';
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
@@ -11,6 +16,26 @@ import { bindEvent, addStyles } from '~/utils';
   // communication example: send previous tab title from background page
   onMessage('tab-prev', ({ data }) => {
     console.log(`[vitesse-webext] Navigate from page "${data.title}"`);
+  });
+
+  onMessage(CLICK_EXT_TRANS_MENU, async () => {
+    const dom = document.querySelector('.md-to-html__selected');
+    if (dom) {
+      return {
+        dom,
+      };
+    }
+
+    // sitdown
+    return { dom: null };
+  });
+
+  onMessage(EXT_BIND_EVENT, () => {
+    bindEvent();
+  });
+
+  onMessage(EXT_UNBIND_EVENT, () => {
+    unbindEvent();
   });
 
   // mount component to context window
@@ -29,7 +54,5 @@ import { bindEvent, addStyles } from '~/utils';
   shadowDOM.appendChild(root);
   document.body.appendChild(container);
   createApp(App).mount(root);
-
-  bindEvent();
   addStyles();
 })();
