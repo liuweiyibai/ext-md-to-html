@@ -89,6 +89,7 @@ export default defineConfig(({ command }) => ({
       mangle: false,
     },
     rollupOptions: {
+      external: ['sitdown'],
       input: {
         background: r('src/background/index.html'),
         options: r('src/options/index.html'),

@@ -1,5 +1,6 @@
 import { onMessage, sendMessage } from 'webext-bridge';
 import type { Tabs } from 'webextension-polyfill';
+import { putUserWorkFlows } from '~/fetch';
 
 import {
   CLICK_EXT_TRANS_MENU,
@@ -62,6 +63,13 @@ onMessage('get-current-tab', async () => {
       title: undefined,
     };
   }
+});
+
+onMessage('EXT_FETCH_HTML', async (data: any) => {
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
+  putUserWorkFlows(data);
 });
 
 injectStartMenu();

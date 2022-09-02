@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
-import { onMessage } from 'webext-bridge';
+import { onMessage, sendMessage } from 'webext-bridge';
 import { createApp } from 'vue';
+
 import App from './views/App.vue';
-import { bindEvent, addStyles, unbindEvent } from '~/utils';
+import { bindEvent, addStyles, unbindEvent, copyToClip } from '~/utils';
 import {
   CLICK_EXT_TRANS_MENU,
   EXT_BIND_EVENT,
@@ -11,6 +12,7 @@ import {
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
+  document.documentElement.style.fontSize = '16px';
   console.info('[vitesse-webext] Hello world from content script');
 
   // communication example: send previous tab title from background page
@@ -21,13 +23,12 @@ import {
   onMessage(CLICK_EXT_TRANS_MENU, async () => {
     const dom = document.querySelector('.md-to-html__selected');
     if (dom) {
-      return {
-        dom,
-      };
+      sendMessage('EXT_FETCH_HTML', { a: '1' });
+      // const url = window.location.href;
+      // const sitdown = new Sitdown();
+      // const markdown = sitdown.HTMLToMD(dom.innerHTML);
+      // copyToClip(markdown);
     }
-
-    // sitdown
-    return { dom: null };
   });
 
   onMessage(EXT_BIND_EVENT, () => {
